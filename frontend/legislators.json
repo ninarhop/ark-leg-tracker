@@ -1,0 +1,1098 @@
+[
+  {
+    "people_id": 8610,
+    "name": "Joint Budget Committee",
+    "party_id": "0",
+    "district": "",
+    "role": "Jnt",
+    "votes": []
+  },
+  {
+    "people_id": 8619,
+    "name": "Senate Efficiency",
+    "party_id": "0",
+    "district": "",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 8622,
+    "name": "Tracy Steele",
+    "party_id": "1",
+    "district": "HD-072",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 10657,
+    "name": "Jane English",
+    "party_id": "2",
+    "district": "SD-013",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 10661,
+    "name": "Fred Allen",
+    "party_id": "1",
+    "district": "HD-077",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 10662,
+    "name": "Lane Jean",
+    "party_id": "2",
+    "district": "HD-099",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 10667,
+    "name": "Stephen Meeks",
+    "party_id": "2",
+    "district": "HD-042",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 11360,
+    "name": "Mark Perry",
+    "party_id": "1",
+    "district": "HD-066",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 11831,
+    "name": "Jonathan Dismang",
+    "party_id": "2",
+    "district": "SD-018",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 11991,
+    "name": "Greg Leding",
+    "party_id": "1",
+    "district": "SD-030",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 12101,
+    "name": "Missy Irvin",
+    "party_id": "2",
+    "district": "SD-024",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 12108,
+    "name": "Jon Eubanks",
+    "party_id": "2",
+    "district": "HD-046",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 12110,
+    "name": "Matthew Shepherd",
+    "party_id": "2",
+    "district": "HD-097",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 12159,
+    "name": "Bryan King",
+    "party_id": "2",
+    "district": "SD-028",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 12186,
+    "name": "Kim Hammer",
+    "party_id": "2",
+    "district": "SD-016",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 12236,
+    "name": "Stephanie Flowers",
+    "party_id": "1",
+    "district": "SD-008",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 12464,
+    "name": "Frederick Love",
+    "party_id": "1",
+    "district": "SD-015",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 12468,
+    "name": "Terry Rice",
+    "party_id": "2",
+    "district": "SD-005",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 12470,
+    "name": "Reginald Murdock",
+    "party_id": "1",
+    "district": "SD-009",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 12578,
+    "name": "Jeff Wardlaw",
+    "party_id": "2",
+    "district": "HD-094",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 12719,
+    "name": "Bruce Cozart",
+    "party_id": "2",
+    "district": "HD-091",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 14938,
+    "name": "David Whitaker",
+    "party_id": "1",
+    "district": "HD-022",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 14940,
+    "name": "Jim Dotson",
+    "party_id": "2",
+    "district": "SD-034",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 14948,
+    "name": "Mike Holcomb",
+    "party_id": "2",
+    "district": "HD-093",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 14954,
+    "name": "Stephen Magie",
+    "party_id": "1",
+    "district": "HD-056",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 14955,
+    "name": "Mark McElroy",
+    "party_id": "2",
+    "district": "HD-062",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 14959,
+    "name": "John Payton",
+    "party_id": "2",
+    "district": "SD-022",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 14965,
+    "name": "Richard Womack",
+    "party_id": "2",
+    "district": "HD-090",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 14966,
+    "name": "Alan Clark",
+    "party_id": "2",
+    "district": "SD-007",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 14968,
+    "name": "Ronald Caldwell",
+    "party_id": "2",
+    "district": "SD-010",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 14972,
+    "name": "Bart Hester",
+    "party_id": "2",
+    "district": "SD-033",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 14973,
+    "name": "Jimmy Hickey",
+    "party_id": "2",
+    "district": "SD-004",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 16335,
+    "name": "Jack Ladyman",
+    "party_id": "2",
+    "district": "HD-032",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 16336,
+    "name": "Robin Lundstrum",
+    "party_id": "2",
+    "district": "HD-018",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 16337,
+    "name": "Dan Sullivan",
+    "party_id": "2",
+    "district": "SD-020",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 16338,
+    "name": "Dwight Tosh",
+    "party_id": "2",
+    "district": "HD-038",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 16339,
+    "name": "David Wallace",
+    "party_id": "2",
+    "district": "SD-019",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 16381,
+    "name": "Blake Johnson",
+    "party_id": "2",
+    "district": "SD-021",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 16898,
+    "name": "Rick Beck",
+    "party_id": "2",
+    "district": "HD-043",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 16900,
+    "name": "Mary Bentley",
+    "party_id": "2",
+    "district": "HD-054",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 16902,
+    "name": "Justin Boyd",
+    "party_id": "2",
+    "district": "SD-027",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 16907,
+    "name": "Les Eaves",
+    "party_id": "2",
+    "district": "HD-058",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 16909,
+    "name": "Justin Gonzales",
+    "party_id": "2",
+    "district": "HD-089",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 16911,
+    "name": "Julie Mayberry",
+    "party_id": "2",
+    "district": "HD-092",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 16912,
+    "name": "Ken Ferguson",
+    "party_id": "1",
+    "district": "HD-064",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 16916,
+    "name": "Ron Mcnair",
+    "party_id": "2",
+    "district": "HD-005",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 16919,
+    "name": "Marcus Richmond",
+    "party_id": "2",
+    "district": "HD-052",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 16924,
+    "name": "Clarke Tucker",
+    "party_id": "1",
+    "district": "SD-014",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 16926,
+    "name": "Deann Vaught",
+    "party_id": "2",
+    "district": "HD-087",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 16963,
+    "name": "Scott Flippo",
+    "party_id": "2",
+    "district": "SD-023",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 17040,
+    "name": "Karilyn Brown",
+    "party_id": "2",
+    "district": "HD-067",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 17436,
+    "name": "House Management",
+    "party_id": "0",
+    "district": "",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 18006,
+    "name": "Sonia Eubanks Barker",
+    "party_id": "2",
+    "district": "HD-096",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 18008,
+    "name": "Frances Cavenaugh",
+    "party_id": "2",
+    "district": "HD-030",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 18012,
+    "name": "Jimmie Gazaway",
+    "party_id": "2",
+    "district": "HD-031",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 18014,
+    "name": "Roger Lynch",
+    "party_id": "2",
+    "district": "HD-060",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 18015,
+    "name": "John Maddox",
+    "party_id": "2",
+    "district": "HD-086",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 18016,
+    "name": "Aaron Pilkington",
+    "party_id": "2",
+    "district": "HD-045",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 18017,
+    "name": "Johnny Rye",
+    "party_id": "2",
+    "district": "HD-036",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 18018,
+    "name": "Les Warren",
+    "party_id": "2",
+    "district": "HD-084",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 18025,
+    "name": "Austin Mccollum",
+    "party_id": "2",
+    "district": "HD-008",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 18683,
+    "name": "Carol Dalby",
+    "party_id": "2",
+    "district": "HD-100",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 18684,
+    "name": "Steve Hollowell",
+    "party_id": "2",
+    "district": "HD-037",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 18685,
+    "name": "Clint Penzo",
+    "party_id": "2",
+    "district": "SD-031",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 19943,
+    "name": "Brian Evans",
+    "party_id": "2",
+    "district": "HD-068",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 20017,
+    "name": "Mark Johnson",
+    "party_id": "2",
+    "district": "SD-017",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 20405,
+    "name": "Ricky Hill",
+    "party_id": "2",
+    "district": "SD-011",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 20742,
+    "name": "Lee Johnson",
+    "party_id": "2",
+    "district": "HD-047",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 20762,
+    "name": "Andrew Collins",
+    "party_id": "1",
+    "district": "HD-073",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 20764,
+    "name": "Harlan Breaux",
+    "party_id": "2",
+    "district": "HD-006",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 20765,
+    "name": "Cameron Cooper",
+    "party_id": "2",
+    "district": "HD-057",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 20768,
+    "name": "Nicole Clowney",
+    "party_id": "1",
+    "district": "HD-021",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 20769,
+    "name": "Cindy Crawford",
+    "party_id": "2",
+    "district": "HD-051",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 20770,
+    "name": "Denise Garner",
+    "party_id": "1",
+    "district": "HD-020",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 20776,
+    "name": "Tippi McCullough",
+    "party_id": "1",
+    "district": "HD-074",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 20779,
+    "name": "Jay Richardson",
+    "party_id": "1",
+    "district": "HD-049",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 20781,
+    "name": "Jamie Scott",
+    "party_id": "1",
+    "district": "SD-012",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 20783,
+    "name": "Jim Wooten",
+    "party_id": "2",
+    "district": "HD-059",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 20838,
+    "name": "Breanne Davis",
+    "party_id": "2",
+    "district": "SD-025",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 21594,
+    "name": "Denise Ennett",
+    "party_id": "1",
+    "district": "HD-080",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 21628,
+    "name": "Richard McGrew",
+    "party_id": "2",
+    "district": "HD-085",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 21629,
+    "name": "Joy Springer",
+    "party_id": "1",
+    "district": "HD-076",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 21699,
+    "name": "Ben Gilmore",
+    "party_id": "2",
+    "district": "SD-001",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 21766,
+    "name": "Howard Beaty",
+    "party_id": "2",
+    "district": "HD-095",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 21767,
+    "name": "Tony Furman",
+    "party_id": "2",
+    "district": "HD-082",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 21768,
+    "name": "Kendon Underwood",
+    "party_id": "2",
+    "district": "HD-016",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 21894,
+    "name": "David Ray",
+    "party_id": "2",
+    "district": "HD-069",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 22170,
+    "name": "John Carr",
+    "party_id": "2",
+    "district": "HD-015",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 22171,
+    "name": "Rick McClure",
+    "party_id": "2",
+    "district": "HD-029",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 22172,
+    "name": "Joshua Bryant",
+    "party_id": "2",
+    "district": "SD-032",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 22202,
+    "name": "Keith Brooks",
+    "party_id": "2",
+    "district": "HD-078",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 22204,
+    "name": "Ashley Hudson",
+    "party_id": "1",
+    "district": "HD-075",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 22205,
+    "name": "Jon Milligan",
+    "party_id": "2",
+    "district": "HD-033",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 23201,
+    "name": "Matt McKee",
+    "party_id": "2",
+    "district": "SD-006",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 23293,
+    "name": "Jim Petty",
+    "party_id": "2",
+    "district": "SD-029",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 23377,
+    "name": "RJ Hawk",
+    "party_id": "2",
+    "district": "HD-081",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 23640,
+    "name": "Wade Andrews",
+    "party_id": "2",
+    "district": "HD-098",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 23884,
+    "name": "Rebecca Burkes",
+    "party_id": "2",
+    "district": "HD-011",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 23886,
+    "name": "Hope Duke",
+    "party_id": "2",
+    "district": "HD-012",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 23887,
+    "name": "Zack Gramlich",
+    "party_id": "2",
+    "district": "HD-050",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 23888,
+    "name": "Mindy McAlindon",
+    "party_id": "2",
+    "district": "HD-010",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 23946,
+    "name": "Steve Crowell",
+    "party_id": "2",
+    "district": "SD-003",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 23947,
+    "name": "Matt Duffield",
+    "party_id": "2",
+    "district": "HD-053",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 23981,
+    "name": "Stetson Painter",
+    "party_id": "2",
+    "district": "HD-003",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 23985,
+    "name": "Steve Unger",
+    "party_id": "2",
+    "district": "HD-019",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 23990,
+    "name": "Wayne Long",
+    "party_id": "2",
+    "district": "HD-039",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 23991,
+    "name": "Scott Richardson",
+    "party_id": "2",
+    "district": "HD-013",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 24170,
+    "name": "Brandon Achor",
+    "party_id": "2",
+    "district": "HD-071",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 24171,
+    "name": "Jeremiah Moore",
+    "party_id": "2",
+    "district": "HD-061",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 24172,
+    "name": "Joey Carr",
+    "party_id": "2",
+    "district": "HD-034",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 24173,
+    "name": "Matt Brown",
+    "party_id": "2",
+    "district": "HD-055",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 24174,
+    "name": "Shad Pearce",
+    "party_id": "2",
+    "district": "HD-040",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 24175,
+    "name": "Chad Puryear",
+    "party_id": "2",
+    "district": "HD-025",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 24176,
+    "name": "Ryan Rose",
+    "party_id": "2",
+    "district": "HD-048",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 24177,
+    "name": "Bart Schulz",
+    "party_id": "2",
+    "district": "HD-028",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 24178,
+    "name": "Trey Steimel",
+    "party_id": "2",
+    "district": "HD-002",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 24179,
+    "name": "Tara Shephard",
+    "party_id": "1",
+    "district": "HD-079",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 24180,
+    "name": "Jeremy Wooldridge",
+    "party_id": "2",
+    "district": "HD-001",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 24181,
+    "name": "Kendra Moore",
+    "party_id": "2",
+    "district": "HD-023",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 24308,
+    "name": "Tyler Dees",
+    "party_id": "2",
+    "district": "SD-035",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 24309,
+    "name": "Matt Stone",
+    "party_id": "2",
+    "district": "SD-002",
+    "role": "Sen",
+    "votes": []
+  },
+  {
+    "people_id": 24372,
+    "name": "Brit McKenzie",
+    "party_id": "2",
+    "district": "HD-007",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 24615,
+    "name": "Steven Walker",
+    "party_id": "2",
+    "district": "HD-027",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 25482,
+    "name": "Glenn Barnes",
+    "party_id": "1",
+    "district": "HD-065",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 25483,
+    "name": "Lincoln Barnett",
+    "party_id": "1",
+    "district": "HD-063",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 25484,
+    "name": "Alyssa Brown",
+    "party_id": "2",
+    "district": "HD-041",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 25485,
+    "name": "Nick Burkes",
+    "party_id": "2",
+    "district": "HD-014",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 25486,
+    "name": "Paul Childress",
+    "party_id": "2",
+    "district": "HD-083",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 25487,
+    "name": "James Eaton",
+    "party_id": "2",
+    "district": "HD-026",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 25488,
+    "name": "Brad Hall",
+    "party_id": "2",
+    "district": "HD-024",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 25489,
+    "name": "Dolly Henley",
+    "party_id": "2",
+    "district": "HD-088",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 25490,
+    "name": "Jessie McGruder",
+    "party_id": "1",
+    "district": "HD-035",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 25491,
+    "name": "Jason Nazarenko",
+    "party_id": "2",
+    "district": "HD-004",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 25492,
+    "name": "Randy Torres",
+    "party_id": "2",
+    "district": "HD-017",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 25493,
+    "name": "Diana Gonzales Worthen",
+    "party_id": "1",
+    "district": "HD-009",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 26654,
+    "name": "Alex Holladay",
+    "party_id": "1",
+    "district": "HD-070",
+    "role": "Rep",
+    "votes": []
+  },
+  {
+    "people_id": 26655,
+    "name": "Brad Simon",
+    "party_id": "2",
+    "district": "SD-026",
+    "role": "Sen",
+    "votes": []
+  }
+]
