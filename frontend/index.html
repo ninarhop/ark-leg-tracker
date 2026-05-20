@@ -1,26 +1,206 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Arkansas Legislative Tracker</title>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Arkansas Legislative Tracker</title>
+    <link rel="preconnect" href="https://commons.wikimedia.org">
+    <link rel="stylesheet" href="style.css">
+    <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <img
+            class="capitol-image"
+            src="https://commons.wikimedia.org/wiki/Special:FilePath/Arkansas_State_Capitol.jpg?width=520"
+            alt="Arkansas State Capitol"
+          >
+          <div class="brand-copy">
+            <span class="eyebrow">For AR People</span>
+            <h1>Arkansas Legislative Tracker</h1>
+            <p id="dataStatus">Loading legislative data</p>
+          </div>
+        </div>
+        <nav class="view-tabs" aria-label="Tracker views">
+          <button class="view-tab active" type="button" data-view="overview">
+            <i data-lucide="layout-dashboard"></i>
+            Overview
+          </button>
+          <button class="view-tab" type="button" data-view="bills">
+            <i data-lucide="scroll-text"></i>
+            Bills
+          </button>
+          <button class="view-tab" type="button" data-view="queue">
+            <i data-lucide="siren"></i>
+            Action Queue
+          </button>
+          <button class="view-tab" type="button" data-view="legislators">
+            <i data-lucide="users"></i>
+            Legislators
+          </button>
+          <button class="view-tab" type="button" data-view="sources">
+            <i data-lucide="database"></i>
+            Sources
+          </button>
+        </nav>
+      </header>
 
-  <link rel="stylesheet" href="style.css">
-</head>
+      <section class="command-bar" aria-label="Search and filters">
+        <label class="search-field" for="searchInput">
+          <i data-lucide="search"></i>
+          <input id="searchInput" type="search" placeholder="Search bills, summaries, buckets, actions, legislators">
+        </label>
 
-<body>
+        <label>
+          Bucket
+          <select id="bucketFilter"></select>
+        </label>
 
-  <h1>Arkansas Legislative Tracker</h1>
+        <label>
+          Priority
+          <select id="priorityFilter">
+            <option value="">All</option>
+            <option value="flagged">Flagged</option>
+            <option value="urgent">Urgent</option>
+            <option value="high">High</option>
+            <option value="normal">Normal</option>
+            <option value="low">Low</option>
+          </select>
+        </label>
 
-  <input 
-    type="text" 
-    id="searchInput" 
-    placeholder="Search by name, party, district, or chamber..."
-  >
+        <label>
+          Status
+          <select id="statusFilter"></select>
+        </label>
 
-  <div id="legislators"></div>
+        <label>
+          Chamber
+          <select id="chamberFilter">
+            <option value="">All</option>
+            <option value="House">House</option>
+            <option value="Senate">Senate</option>
+            <option value="Joint">Joint</option>
+          </select>
+        </label>
 
-  
-  
-  <script src="app.js"></script>
+        <button id="resetFilters" class="icon-button" type="button" title="Clear filters" aria-label="Clear filters">
+          <i data-lucide="rotate-ccw"></i>
+        </button>
+      </section>
 
-</body>
+      <main class="workspace">
+        <aside class="left-panel">
+          <section class="metric-grid" id="metricGrid"></section>
+          <section class="panel-section">
+            <div class="section-head">
+              <h2>Policy Buckets</h2>
+              <span id="bucketTotal" class="muted"></span>
+            </div>
+            <div id="bucketList" class="bucket-list"></div>
+          </section>
+          <section class="panel-section">
+            <div class="section-head">
+              <h2>Live Source Links</h2>
+            </div>
+            <div class="source-links">
+              <a href="https://www.arkleg.state.ar.us/Bills/RecentlyFiled" target="_blank" rel="noreferrer">Recently Filed</a>
+              <a href="https://www.arkleg.state.ar.us/Bills/RecentActivity" target="_blank" rel="noreferrer">Recent Activity</a>
+              <a href="https://arkleg.state.ar.us/Calendars/BillsCommittee" target="_blank" rel="noreferrer">Committee Agendas</a>
+              <a href="https://www.arkleg.state.ar.us/Calendars/Meetings" target="_blank" rel="noreferrer">Meetings</a>
+            </div>
+          </section>
+        </aside>
+
+        <section class="main-panel">
+          <section id="overviewView" class="view active-view" aria-labelledby="overviewTitle">
+            <div class="section-head">
+              <div>
+                <h2 id="overviewTitle">Session Command Center</h2>
+                <p class="muted">Bills, text links, amendments, votes, alerts, and review notes in one workspace.</p>
+              </div>
+              <button id="exportWorkspace" type="button">
+                <i data-lucide="download"></i>
+                Export Notes
+              </button>
+            </div>
+            <div class="workflow-grid" id="workflowGrid"></div>
+            <div class="split-grid">
+              <section class="table-card">
+                <div class="section-head">
+                  <h3>Newest Movement</h3>
+                </div>
+                <div id="movementList" class="compact-list"></div>
+              </section>
+              <section class="table-card">
+                <div class="section-head">
+                  <h3>Active Alerts</h3>
+                </div>
+                <div id="alertList" class="compact-list"></div>
+              </section>
+            </div>
+          </section>
+
+          <section id="billsView" class="view" aria-labelledby="billsTitle">
+            <div class="section-head">
+              <div>
+                <h2 id="billsTitle">Bill Library</h2>
+                <p id="resultCount" class="muted"></p>
+              </div>
+              <div class="inline-actions">
+                <button id="prevPage" class="icon-button" type="button" title="Previous page" aria-label="Previous page">
+                  <i data-lucide="chevron-left"></i>
+                </button>
+                <button id="nextPage" class="icon-button" type="button" title="Next page" aria-label="Next page">
+                  <i data-lucide="chevron-right"></i>
+                </button>
+              </div>
+            </div>
+            <div id="billTable" class="table-wrap"></div>
+          </section>
+
+          <section id="queueView" class="view" aria-labelledby="queueTitle">
+            <div class="section-head">
+              <div>
+                <h2 id="queueTitle">Action Queue</h2>
+                <p class="muted">High priority bills, organizing watches, unread alerts, amendments, and committee movement.</p>
+              </div>
+            </div>
+            <div id="queueList" class="queue-list"></div>
+          </section>
+
+          <section id="legislatorsView" class="view" aria-labelledby="legislatorsTitle">
+            <div class="section-head">
+              <div>
+                <h2 id="legislatorsTitle">Legislators</h2>
+                <p id="legislatorCount" class="muted"></p>
+              </div>
+            </div>
+            <div id="legislatorGrid" class="legislator-grid"></div>
+          </section>
+
+          <section id="sourcesView" class="view" aria-labelledby="sourcesTitle">
+            <div class="section-head">
+              <div>
+                <h2 id="sourcesTitle">Data Sources</h2>
+                <p class="muted">Current coverage and the source pages that keep the tracker honest.</p>
+              </div>
+            </div>
+            <div id="sourcePanel" class="source-panel"></div>
+          </section>
+        </section>
+
+        <aside class="detail-panel" id="detailPanel" aria-label="Bill detail">
+          <div class="empty-detail">
+            <i data-lucide="mouse-pointer-click"></i>
+            <h2>Select a bill</h2>
+            <p>Open a bill to review text links, amendments, movement, votes, video timecodes, and content drafts.</p>
+          </div>
+        </aside>
+      </main>
+    </div>
+    <div id="toast" class="toast" hidden></div>
+  </body>
 </html>
