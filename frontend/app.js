@@ -1,5 +1,5 @@
 const STORAGE_KEY = "arkLegTrackerWorkspace.v2";
-const APP_VERSION = "2026-05-21c";
+const APP_VERSION = "2026-05-21d";
 const PAGE_SIZE = 100;
 
 const statusLabels = {
@@ -44,6 +44,7 @@ const state = {
   rollCalls: [],
   votesByBill: new Map(),
   votesByPerson: new Map(),
+  automationStatus: null,
   generatedAt: "",
   source: "",
   selectedBillNumber: "",
@@ -262,6 +263,7 @@ async function loadData() {
   const trackerData = await fetchJson("tracker-data.json").catch(() => null);
   const legislators = await fetchJson("legislators.json").catch(() => []);
   const voteDetails = await fetchJson("vote-details.json").catch(() => null);
+  state.automationStatus = await fetchJson("automation-status.json").catch(() => null);
   const fallbackBills = trackerData ? [] : await fetchJson("bills.json").catch(() => []);
 
   const rawBills = Array.isArray(trackerData?.bills) ? trackerData.bills : fallbackBills;
@@ -621,6 +623,7 @@ function renderSourcesView() {
   const amendmentCount = bills.reduce((sum, bill) => sum + bill.amendments.length, 0);
   const voteCount = bills.reduce((sum, bill) => sum + bill.votes.length, 0);
   const actionCount = bills.reduce((sum, bill) => sum + bill.actions.length, 0);
+  const automation = state.automationStatus;
 
   els.sourcePanel.innerHTML = [
     sourceCard("Current Dataset", [
@@ -630,6 +633,15 @@ function renderSourcesView() {
       `${formatNumber(voteCount)} votes`,
       `${formatNumber(actionCount)} actions`
     ], state.source),
+    sourceCard("Automation", automation ? [
+      `Last data change check: ${formatDateTime(automation.checked_at)}`,
+      `${formatNumber(automation.changed_bills || 0)} changed bills in last committed run`,
+      `${formatNumber(automation.new_bills || 0)} newly filed bills in last committed run`,
+      `${formatNumber(automation.sessions?.length || 0)} LegiScan sessions watched`
+    ] : [
+      "Waiting for the first GitHub Actions polling run",
+      "Requires the LEGISCAN_API_KEY repository secret"
+    ], "Polls LegiScan from GitHub Actions and commits new static data to the site."),
     sourceCard("Arkansas Legislature", [
       linkHtml("Bill Search", "https://www.arkleg.state.ar.us/Bills/Search"),
       linkHtml("Recent Activity", "https://www.arkleg.state.ar.us/Bills/RecentActivity"),
@@ -1420,7 +1432,8 @@ function emptyState(message) {
 
 async function fetchJson(path) {
   const separator = path.includes("?") ? "&" : "?";
-  const response = await fetch(`${path}${separator}v=${encodeURIComponent(APP_VERSION)}`, { cache: "no-store" });
+  const cacheBust = `${APP_VERSION}-${Date.now()}`;
+  const response = await fetch(`${path}${separator}v=${encodeURIComponent(cacheBust)}`, { cache: "no-store" });
   if (!response.ok) throw new Error(`Could not load ${path}`);
   return response.json();
 }
