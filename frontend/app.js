@@ -1,4 +1,5 @@
 const STORAGE_KEY = "arkLegTrackerWorkspace.v2";
+const APP_VERSION = "2026-05-21c";
 const PAGE_SIZE = 100;
 
 const statusLabels = {
@@ -40,11 +41,18 @@ const state = {
   bills: [],
   legislators: [],
   alerts: [],
+  rollCalls: [],
+  votesByBill: new Map(),
+  votesByPerson: new Map(),
   generatedAt: "",
   source: "",
   selectedBillNumber: "",
+  selectedPersonId: "",
+  detailType: "bill",
   view: "overview",
   page: 0,
+  sort: "priority",
+  peopleFilter: "",
   filters: {
     search: "",
     bucket: "",
@@ -61,10 +69,13 @@ const els = {
   bucketFilter: document.querySelector("#bucketFilter"),
   priorityFilter: document.querySelector("#priorityFilter"),
   statusFilter: document.querySelector("#statusFilter"),
+  chamberFilterLabel: document.querySelector("#chamberFilterLabel"),
   chamberFilter: document.querySelector("#chamberFilter"),
+  sortFilter: document.querySelector("#sortFilter"),
   resetFilters: document.querySelector("#resetFilters"),
   metricGrid: document.querySelector("#metricGrid"),
   bucketTotal: document.querySelector("#bucketTotal"),
+  sideFilterTitle: document.querySelector("#sideFilterTitle"),
   bucketList: document.querySelector("#bucketList"),
   workflowGrid: document.querySelector("#workflowGrid"),
   movementList: document.querySelector("#movementList"),
@@ -85,22 +96,17 @@ const els = {
 init();
 
 async function init() {
+  state.view = initialView();
   bindEvents();
   await loadData();
   hydrateFilters();
+  applyView(state.view, { updateHash: false });
   renderAll();
 }
 
 function bindEvents() {
   document.querySelectorAll("[data-view]").forEach((button) => {
-    button.addEventListener("click", () => {
-      state.view = button.dataset.view;
-      document.querySelectorAll("[data-view]").forEach((tab) => tab.classList.toggle("active", tab.dataset.view === state.view));
-      document.querySelectorAll(".view").forEach((view) => view.classList.remove("active-view"));
-      document.querySelector(`#${state.view}View`).classList.add("active-view");
-      renderCurrentView();
-      refreshIcons();
-    });
+    button.addEventListener("click", () => applyView(button.dataset.view));
   });
 
   els.searchInput.addEventListener("input", debounce(() => {
@@ -117,9 +123,19 @@ function bindEvents() {
   ].forEach(([key, element]) => {
     element.addEventListener("change", () => {
       state.filters[key] = element.value;
+      if (key === "chamber" && state.view === "legislators") {
+        state.peopleFilter = { House: "Rep", Senate: "Sen", Joint: "Jnt" }[element.value] || "";
+      }
       state.page = 0;
       renderAll();
     });
+  });
+
+  els.sortFilter.addEventListener("change", () => {
+    state.sort = els.sortFilter.value;
+    state.page = 0;
+    renderCurrentView();
+    refreshIcons();
   });
 
   els.resetFilters.addEventListener("click", () => {
@@ -129,6 +145,9 @@ function bindEvents() {
     els.priorityFilter.value = "";
     els.statusFilter.value = "";
     els.chamberFilter.value = "";
+    els.sortFilter.value = "priority";
+    state.sort = "priority";
+    state.peopleFilter = "";
     state.page = 0;
     renderAll();
     showToast("Filters cleared");
@@ -145,6 +164,16 @@ function bindEvents() {
   });
 
   els.bucketList.addEventListener("click", (event) => {
+    const peopleButton = event.target.closest("[data-people-filter]");
+    if (peopleButton) {
+      state.peopleFilter = peopleButton.dataset.peopleFilter;
+      const chamberByRole = { Rep: "House", Sen: "Senate", Jnt: "Joint" };
+      state.filters.chamber = chamberByRole[state.peopleFilter] || "";
+      els.chamberFilter.value = state.filters.chamber;
+      renderAll();
+      return;
+    }
+
     const button = event.target.closest("[data-bucket]");
     if (!button) return;
     state.filters.bucket = button.dataset.bucket;
@@ -155,6 +184,15 @@ function bindEvents() {
 
   [els.billTable, els.movementList, els.alertList, els.queueList].forEach((container) => {
     container.addEventListener("click", (event) => {
+      const sortButton = event.target.closest("[data-sort]");
+      if (sortButton) {
+        state.sort = sortButton.dataset.sort;
+        els.sortFilter.value = state.sort;
+        state.page = 0;
+        renderBillsView();
+        refreshIcons();
+        return;
+      }
       const row = event.target.closest("[data-bill-number]");
       if (!row) return;
       selectBill(row.dataset.billNumber);
@@ -167,17 +205,71 @@ function bindEvents() {
   els.detailPanel.addEventListener("click", handleDetailClick);
 
   els.exportWorkspace.addEventListener("click", exportWorkspaceNotes);
+
+  els.legislatorGrid.addEventListener("click", (event) => {
+    const card = event.target.closest("[data-person-id]");
+    if (!card) return;
+    selectPerson(card.dataset.personId);
+  });
+
+  document.querySelectorAll("[data-people-filter]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.peopleFilter = button.dataset.peopleFilter;
+      const chamberByRole = { Rep: "House", Sen: "Senate", Jnt: "Joint" };
+      state.filters.chamber = chamberByRole[state.peopleFilter] || "";
+      els.chamberFilter.value = state.filters.chamber;
+      renderAll();
+      refreshIcons();
+    });
+  });
+
+  window.addEventListener("hashchange", () => {
+    applyView(initialView(), { updateHash: false });
+  });
+}
+
+function initialView() {
+  const hash = window.location.hash.replace("#", "").trim();
+  const allowedViews = ["overview", "bills", "queue", "legislators", "sources"];
+  return allowedViews.includes(hash) ? hash : "overview";
+}
+
+function applyView(view, options = {}) {
+  const nextView = ["overview", "bills", "queue", "legislators", "sources"].includes(view) ? view : "overview";
+  state.view = nextView;
+  document.querySelectorAll("[data-view]").forEach((tab) => tab.classList.toggle("active", tab.dataset.view === state.view));
+  document.querySelectorAll(".view").forEach((viewElement) => viewElement.classList.remove("active-view"));
+  document.querySelector(`#${state.view}View`)?.classList.add("active-view");
+  if (options.updateHash !== false) {
+    window.history.replaceState(null, "", `#${state.view}`);
+  }
+  applyFilterControlState();
+  renderMetrics();
+  renderBucketList();
+  renderCurrentView();
+  refreshIcons();
+}
+
+function applyFilterControlState() {
+  const peopleView = state.view === "legislators";
+  document.querySelectorAll(".bill-filter").forEach((field) => {
+    field.hidden = peopleView;
+  });
+  els.chamberFilterLabel.textContent = peopleView ? "Group" : "Chamber";
 }
 
 async function loadData() {
   const trackerData = await fetchJson("tracker-data.json").catch(() => null);
   const legislators = await fetchJson("legislators.json").catch(() => []);
+  const voteDetails = await fetchJson("vote-details.json").catch(() => null);
   const fallbackBills = trackerData ? [] : await fetchJson("bills.json").catch(() => []);
 
   const rawBills = Array.isArray(trackerData?.bills) ? trackerData.bills : fallbackBills;
   state.bills = rawBills.map(normalizeBill);
   state.legislators = Array.isArray(legislators) ? legislators : [];
   state.alerts = Array.isArray(trackerData?.alerts) ? trackerData.alerts : [];
+  state.rollCalls = Array.isArray(voteDetails?.roll_calls) ? voteDetails.roll_calls : [];
+  buildVoteIndexes();
   state.generatedAt = trackerData?.generated_at || "";
   state.source = trackerData?.source || "GitHub frontend JSON";
 
@@ -232,6 +324,48 @@ function normalizeBill(raw, index) {
   };
 }
 
+function buildVoteIndexes() {
+  state.votesByBill = new Map();
+  state.votesByPerson = new Map();
+
+  state.rollCalls.forEach((rollCall) => {
+    const billNumber = String(rollCall.bill_number || "");
+    if (!state.votesByBill.has(billNumber)) {
+      state.votesByBill.set(billNumber, []);
+    }
+    state.votesByBill.get(billNumber).push(rollCall);
+
+    (rollCall.member_votes || []).forEach((vote) => {
+      const personId = String(vote.people_id || "");
+      if (!personId) return;
+      if (!state.votesByPerson.has(personId)) {
+        state.votesByPerson.set(personId, { counts: { Yea: 0, Nay: 0, Other: 0 }, votes: [] });
+      }
+      const bucket = voteBucket(vote.vote_text);
+      const record = state.votesByPerson.get(personId);
+      record.counts[bucket] += 1;
+      record.votes.push({
+        ...vote,
+        bill_number: billNumber,
+        bill_title: rollCall.bill_title,
+        roll_call_id: rollCall.roll_call_id,
+        date: rollCall.date,
+        motion: rollCall.motion,
+        result: rollCall.result,
+        chamber: rollCall.chamber,
+        source_url: rollCall.source_url
+      });
+    });
+  });
+
+  state.votesByBill.forEach((rollCalls) => {
+    rollCalls.sort((a, b) => dateValue(b.date) - dateValue(a.date));
+  });
+  state.votesByPerson.forEach((record) => {
+    record.votes.sort((a, b) => dateValue(b.date) - dateValue(a.date));
+  });
+}
+
 function hydrateFilters() {
   const buckets = unique([...policyBuckets.map((bucket) => bucket.name), ...state.bills.map((bill) => mergedBill(bill).bucket)])
     .filter(Boolean)
@@ -268,6 +402,8 @@ function renderMetrics() {
 
   els.metricGrid.innerHTML = [
     metric("Bills", bills.length),
+    metric("People", state.legislators.length),
+    metric("Member Votes", state.rollCalls.reduce((sum, rollCall) => sum + (rollCall.member_votes || []).length, 0)),
     metric("Text Links", textCount),
     metric("Amendments", amendmentCount),
     metric("Queue", queue.length),
@@ -277,6 +413,37 @@ function renderMetrics() {
 }
 
 function renderBucketList() {
+  if (state.view === "legislators") {
+    const counts = {
+      "All People": state.legislators.length,
+      House: state.legislators.filter((person) => person.role === "Rep").length,
+      Senate: state.legislators.filter((person) => person.role === "Sen").length,
+      Committees: state.legislators.filter((person) => person.role === "Jnt").length
+    };
+    els.sideFilterTitle.textContent = "People Groups";
+    els.bucketTotal.textContent = `${formatNumber(state.legislators.length)} people`;
+    els.bucketList.innerHTML = `
+      <button class="bucket-row ${state.peopleFilter === "" ? "active" : ""}" type="button" data-people-filter="">
+        <span>All People</span>
+        <strong>${formatNumber(counts["All People"])}</strong>
+      </button>
+      <button class="bucket-row ${state.peopleFilter === "Rep" ? "active" : ""}" type="button" data-people-filter="Rep">
+        <span>House</span>
+        <strong>${formatNumber(counts.House)}</strong>
+      </button>
+      <button class="bucket-row ${state.peopleFilter === "Sen" ? "active" : ""}" type="button" data-people-filter="Sen">
+        <span>Senate</span>
+        <strong>${formatNumber(counts.Senate)}</strong>
+      </button>
+      <button class="bucket-row ${state.peopleFilter === "Jnt" ? "active" : ""}" type="button" data-people-filter="Jnt">
+        <span>Committees</span>
+        <strong>${formatNumber(counts.Committees)}</strong>
+      </button>
+    `;
+    return;
+  }
+
+  els.sideFilterTitle.textContent = "Policy Buckets";
   const counts = countBy(state.bills.map((bill) => mergedBill(bill).bucket || "Unbucketed"));
   const rows = Object.entries(counts).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
   els.bucketTotal.textContent = `${rows.length} buckets`;
@@ -340,15 +507,16 @@ function renderBillsView() {
     <table>
       <thead>
         <tr>
-          <th class="col-bill">Bill</th>
+          <th class="col-bill"><button type="button" data-sort="bill">Bill</button></th>
           <th>Title + Bucket</th>
-          <th class="col-status">Status</th>
-          <th class="col-counts">Records</th>
-          <th class="col-priority">Priority</th>
+          <th class="col-status"><button type="button" data-sort="status">Status</button></th>
+          <th class="col-counts"><button type="button" data-sort="amendments">Records</button></th>
+          <th class="col-priority"><button type="button" data-sort="priority">Priority</button></th>
+          <th class="col-action">Details</th>
         </tr>
       </thead>
       <tbody>
-        ${pageBills.map(renderBillRow).join("") || `<tr><td colspan="5">${emptyState("No bills match these filters")}</td></tr>`}
+        ${pageBills.map(renderBillRow).join("") || `<tr><td colspan="6">${emptyState("No bills match these filters")}</td></tr>`}
       </tbody>
     </table>
   `;
@@ -380,12 +548,18 @@ function renderBillRow(bill) {
         <div class="subline">${formatNumber(bill.amendments.length)} amend. - ${formatNumber(bill.votes.length)} votes</div>
       </td>
       <td class="col-priority">${priorityPill(bill.priority)}</td>
+      <td class="col-action">
+        <button type="button" data-bill-number="${escapeAttr(bill.number)}">
+          <i data-lucide="panel-right-open"></i>
+          Open
+        </button>
+      </td>
     </tr>
   `;
 }
 
 function renderQueueView() {
-  const queue = getQueueBills().slice(0, 120);
+  const queue = getQueueBills().filter(matchesFilters).slice(0, 120);
   els.queueList.innerHTML = queue.map((bill) => {
     const reasons = queueReasons(bill);
     return `
@@ -400,27 +574,43 @@ function renderQueueView() {
         <p>${escapeHtml(bill.lastAction || bill.summary || "")}</p>
       </article>
     `;
-  }).join("") || emptyState("No queue items yet. Mark a bill high priority, add an amendment review, or set a hearing/floor watch.");
+  }).join("") || emptyState("No queue items match these filters. Clear filters or choose a different bucket/priority.");
 }
 
 function renderLegislatorsView() {
   const search = state.filters.search.toLowerCase();
+  const chamberRole = state.filters.chamber === "House"
+    ? "Rep"
+    : state.filters.chamber === "Senate"
+      ? "Sen"
+      : state.filters.chamber === "Joint"
+        ? "Jnt"
+        : "";
+  document.querySelectorAll("[data-people-filter]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.peopleFilter === state.peopleFilter);
+  });
   const legislators = state.legislators.filter((person) => {
+    if (state.peopleFilter && person.role !== state.peopleFilter) return false;
+    if (chamberRole && person.role !== chamberRole) return false;
     const haystack = `${person.name || ""} ${person.district || ""} ${person.role || ""} ${partyLabel(person.party_id)}`.toLowerCase();
     return !search || haystack.includes(search);
-  });
+  }).sort((a, b) => roleLabel(a.role).localeCompare(roleLabel(b.role)) || String(a.district || "").localeCompare(String(b.district || ""), undefined, { numeric: true }) || String(a.name || "").localeCompare(String(b.name || "")));
 
-  els.legislatorCount.textContent = `${formatNumber(legislators.length)} people and committees`;
+  els.legislatorCount.textContent = `${formatNumber(legislators.length)} shown out of ${formatNumber(state.legislators.length)} people and committees - click a card to open vote history`;
   els.legislatorGrid.innerHTML = legislators.map((person) => `
-    <article class="legislator-card">
+    <article class="legislator-card ${String(person.people_id) === state.selectedPersonId ? "selected" : ""}" data-person-id="${escapeAttr(person.people_id)}">
       <div>
         <h3>${escapeHtml(person.name || "Unknown")}</h3>
         <p class="subline">${escapeHtml(roleLabel(person.role))} ${escapeHtml(person.district || "")}</p>
       </div>
       <div class="chip-row">
         <span class="badge">${escapeHtml(partyLabel(person.party_id))}</span>
-        <span class="badge">${formatNumber((person.votes || []).length)} votes</span>
+        ${personVoteBadges(person.people_id)}
       </div>
+      <button type="button" class="open-profile" data-person-id="${escapeAttr(person.people_id)}">
+        <i data-lucide="panel-right-open"></i>
+        Open Profile
+      </button>
     </article>
   `).join("") || emptyState("No legislators match the current search");
 }
@@ -459,6 +649,11 @@ function renderSourcesView() {
 }
 
 function renderDetail() {
+  if (state.detailType === "person") {
+    renderPersonDetail();
+    return;
+  }
+
   const bill = selectedBill();
   if (!bill) {
     els.detailPanel.innerHTML = `
@@ -508,8 +703,58 @@ function renderDetail() {
     ${renderDocuments("Amendments", bill.amendments, renderAmendmentRecord)}
     ${renderTimeline(bill.actions)}
     ${renderDocuments("Votes", bill.votes, renderVoteRecord)}
+    ${renderMemberVotesSection(bill)}
     ${renderVideoSection(bill)}
     ${renderContentSection(bill)}
+  `;
+}
+
+function renderPersonDetail() {
+  const person = selectedPerson();
+  if (!person) {
+    els.detailPanel.innerHTML = `
+      <div class="empty-detail">
+        <i data-lucide="users"></i>
+        <h2>Select a legislator</h2>
+        <p>Choose a representative or senator to view their yea/nay history.</p>
+      </div>
+    `;
+    return;
+  }
+
+  const voteRecord = state.votesByPerson.get(String(person.people_id)) || { counts: { Yea: 0, Nay: 0, Other: 0 }, votes: [] };
+  const votes = voteRecord.votes;
+  els.detailPanel.innerHTML = `
+    <div class="detail-head">
+      <div class="chip-row">
+        <span class="badge">${escapeHtml(roleLabel(person.role))}</span>
+        <span class="badge">${escapeHtml(person.district || "No district")}</span>
+        <span class="badge">${escapeHtml(partyLabel(person.party_id))}</span>
+      </div>
+      <div class="detail-title">
+        <h2>${escapeHtml(person.name || "Unknown")}</h2>
+        <p class="detail-summary">${formatNumber(votes.length)} recorded roll-call votes loaded from LegiScan.</p>
+      </div>
+    </div>
+
+    <section class="detail-section">
+      <div class="section-head"><h3>Vote Summary</h3></div>
+      <div class="metric-grid compact-metrics">
+        ${metric("Yea", voteRecord.counts.Yea)}
+        ${metric("Nay", voteRecord.counts.Nay)}
+        ${metric("Other", voteRecord.counts.Other)}
+      </div>
+    </section>
+
+    <section class="detail-section">
+      <div class="section-head">
+        <h3>Votes By Bill</h3>
+        <span class="muted">${formatNumber(votes.length)}</span>
+      </div>
+      <div class="vote-history">
+        ${votes.map(renderPersonVoteRow).join("") || `<div class="subline">No individual votes loaded for this person.</div>`}
+      </div>
+    </section>
   `;
 }
 
@@ -572,6 +817,75 @@ function renderVoteRecord(row) {
       <a href="${escapeAttr(row.source_url || "#")}" target="_blank" rel="noreferrer">${escapeHtml(row.motion || "Vote")}</a>
       <div class="subline">${escapeHtml(row.vote_date || "")} - ${escapeHtml(row.organization || "")} - ${escapeHtml(row.result || "")} ${formatNumber(row.yes_count || 0)}-${formatNumber(row.no_count || 0)}</div>
     </div>
+  `;
+}
+
+function renderMemberVotesSection(bill) {
+  const rollCalls = state.votesByBill.get(bill.number) || [];
+  return `
+    <section class="detail-section">
+      <div class="section-head">
+        <h3>Member Yea/Nay Votes</h3>
+        <span class="muted">${formatNumber(rollCalls.reduce((sum, rollCall) => sum + (rollCall.member_votes || []).length, 0))}</span>
+      </div>
+      <div class="roll-call-list">
+        ${rollCalls.map(renderRollCallMembers).join("") || `<div class="subline">No individual member votes loaded for this bill.</div>`}
+      </div>
+    </section>
+  `;
+}
+
+function renderRollCallMembers(rollCall) {
+  const grouped = groupMemberVotes(rollCall.member_votes || []);
+  return `
+    <details class="roll-call" open>
+      <summary>
+        <span>${escapeHtml(rollCall.date || "")} - ${escapeHtml(rollCall.motion || "Roll call")}</span>
+        <strong>${formatNumber(grouped.Yea.length)}-${formatNumber(grouped.Nay.length)}</strong>
+      </summary>
+      <div class="roll-call-meta">
+        <span class="badge">${escapeHtml(roleLabel(rollCall.chamber) || rollCall.chamber || "")}</span>
+        <span class="badge">${escapeHtml(labelize(rollCall.result || ""))}</span>
+      </div>
+      <div class="vote-groups">
+        ${renderVoteGroup("Yea", grouped.Yea)}
+        ${renderVoteGroup("Nay", grouped.Nay)}
+        ${renderVoteGroup("Other", grouped.Other)}
+      </div>
+    </details>
+  `;
+}
+
+function renderVoteGroup(label, votes) {
+  return `
+    <div class="vote-group">
+      <h4>${escapeHtml(label)} <span>${formatNumber(votes.length)}</span></h4>
+      <div class="vote-member-list">
+        ${votes.map((vote) => `
+          <button type="button" class="vote-member vote-${escapeAttr(label.toLowerCase())}" data-person-id="${escapeAttr(vote.people_id)}" data-select-person="true">
+            <span>${escapeHtml(vote.name || `Person ${vote.people_id}`)}</span>
+            <small>${escapeHtml(vote.district || "")}</small>
+          </button>
+        `).join("") || `<div class="subline">None</div>`}
+      </div>
+    </div>
+  `;
+}
+
+function renderPersonVoteRow(vote) {
+  return `
+    <article class="person-vote-row vote-${escapeAttr(voteBucket(vote.vote_text).toLowerCase())}">
+      <div class="chip-row">
+        <strong>${escapeHtml(vote.vote_text || "Vote")}</strong>
+        <button type="button" data-bill-number="${escapeAttr(vote.bill_number)}">
+          ${escapeHtml(vote.bill_number)}
+        </button>
+        <span class="badge">${escapeHtml(vote.date || "")}</span>
+      </div>
+      <h4>${escapeHtml(vote.bill_title || "")}</h4>
+      <p class="subline">${escapeHtml(vote.motion || "Roll call")} - ${escapeHtml(labelize(vote.result || ""))}</p>
+      ${vote.source_url ? `<a href="${escapeAttr(vote.source_url)}" target="_blank" rel="noreferrer">Official vote record</a>` : ""}
+    </article>
   `;
 }
 
@@ -723,6 +1037,18 @@ function handleDetailSubmit(event) {
 }
 
 function handleDetailClick(event) {
+  const personTarget = event.target.closest("[data-select-person]");
+  if (personTarget) {
+    selectPerson(personTarget.dataset.personId);
+    return;
+  }
+
+  const billTarget = event.target.closest("[data-bill-number]");
+  if (billTarget) {
+    selectBill(billTarget.dataset.billNumber);
+    return;
+  }
+
   const draftButton = event.target.closest("[data-draft-type]");
   if (draftButton) {
     const bill = selectedBill();
@@ -849,10 +1175,34 @@ function selectedBill() {
 }
 
 function selectBill(number) {
+  state.detailType = "bill";
   state.selectedBillNumber = number;
   renderDetail();
   renderCurrentView();
+  focusDetailPanel();
   refreshIcons();
+}
+
+function selectPerson(personId) {
+  state.detailType = "person";
+  state.selectedPersonId = String(personId || "");
+  renderDetail();
+  renderCurrentView();
+  focusDetailPanel();
+  refreshIcons();
+}
+
+function focusDetailPanel() {
+  els.detailPanel.classList.remove("flash");
+  void els.detailPanel.offsetWidth;
+  els.detailPanel.classList.add("flash");
+  if (window.matchMedia("(max-width: 1220px)").matches) {
+    els.detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+function selectedPerson() {
+  return state.legislators.find((person) => String(person.people_id) === String(state.selectedPersonId));
 }
 
 function updateManualBill(number, updater) {
@@ -892,7 +1242,7 @@ function exportWorkspaceNotes() {
 function updateDataStatus() {
   const date = state.generatedAt ? new Date(state.generatedAt) : null;
   const stamp = date && !Number.isNaN(date.valueOf()) ? date.toLocaleString() : "local JSON";
-  els.dataStatus.textContent = `${formatNumber(state.bills.length)} bills loaded - updated ${stamp}`;
+  els.dataStatus.textContent = `${formatNumber(state.bills.length)} bills and ${formatNumber(state.rollCalls.length)} roll calls loaded - updated ${stamp} - build ${APP_VERSION}`;
 }
 
 function findBillForAlert(alert) {
@@ -940,6 +1290,25 @@ function progressIndex(bill) {
 
 function sortBills(a, b) {
   const priorityRank = { urgent: 0, high: 1, normal: 2, low: 3 };
+  if (state.sort === "latest") {
+    return dateValue(b.lastActionDate) - dateValue(a.lastActionDate) ||
+      a.number.localeCompare(b.number, undefined, { numeric: true });
+  }
+  if (state.sort === "bill") {
+    return a.number.localeCompare(b.number, undefined, { numeric: true });
+  }
+  if (state.sort === "amendments") {
+    return b.amendments.length - a.amendments.length ||
+      dateValue(b.lastActionDate) - dateValue(a.lastActionDate);
+  }
+  if (state.sort === "texts") {
+    return b.texts.length - a.texts.length ||
+      dateValue(b.lastActionDate) - dateValue(a.lastActionDate);
+  }
+  if (state.sort === "status") {
+    return a.statusLabel.localeCompare(b.statusLabel) ||
+      a.number.localeCompare(b.number, undefined, { numeric: true });
+  }
   return (priorityRank[a.priority] ?? 2) - (priorityRank[b.priority] ?? 2) ||
     dateValue(b.lastActionDate) - dateValue(a.lastActionDate) ||
     a.number.localeCompare(b.number, undefined, { numeric: true });
@@ -948,6 +1317,32 @@ function sortBills(a, b) {
 function isReviewed(row) {
   const status = String(row.review_status || row.reviewStatus || row.status || "").toLowerCase();
   return ["reviewed", "complete", "done", "cleared"].includes(status);
+}
+
+function voteBucket(value) {
+  const text = String(value || "").toLowerCase();
+  if (text.includes("yea") || text === "yes" || text === "aye") return "Yea";
+  if (text.includes("nay") || text === "no") return "Nay";
+  return "Other";
+}
+
+function groupMemberVotes(votes) {
+  return votes.reduce((groups, vote) => {
+    groups[voteBucket(vote.vote_text)].push(vote);
+    return groups;
+  }, { Yea: [], Nay: [], Other: [] });
+}
+
+function personVoteBadges(personId) {
+  const record = state.votesByPerson.get(String(personId));
+  if (!record) {
+    return `<span class="badge">0 votes</span>`;
+  }
+  return `
+    <span class="badge">${formatNumber(record.counts.Yea)} yea</span>
+    <span class="badge">${formatNumber(record.counts.Nay)} nay</span>
+    <span class="badge">${formatNumber(record.counts.Other)} other</span>
+  `;
 }
 
 function metric(label, value) {
@@ -1024,7 +1419,8 @@ function emptyState(message) {
 }
 
 async function fetchJson(path) {
-  const response = await fetch(path);
+  const separator = path.includes("?") ? "&" : "?";
+  const response = await fetch(`${path}${separator}v=${encodeURIComponent(APP_VERSION)}`, { cache: "no-store" });
   if (!response.ok) throw new Error(`Could not load ${path}`);
   return response.json();
 }
@@ -1095,7 +1491,7 @@ function partyLabel(value) {
 }
 
 function roleLabel(value) {
-  const roles = { Rep: "House", Sen: "Senate", Jnt: "Joint" };
+  const roles = { Rep: "House", Sen: "Senate", Jnt: "Joint", H: "House", S: "Senate" };
   return roles[String(value || "")] || String(value || "");
 }
 

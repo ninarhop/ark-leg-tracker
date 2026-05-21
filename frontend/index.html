@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Arkansas Legislative Tracker</title>
     <link rel="preconnect" href="https://commons.wikimedia.org">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=20260521c">
     <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-    <script defer src="app.js"></script>
+    <script defer src="app.js?v=20260521c"></script>
   </head>
   <body>
     <div class="app-shell">
@@ -39,7 +39,7 @@
           </button>
           <button class="view-tab" type="button" data-view="legislators">
             <i data-lucide="users"></i>
-            Legislators
+            Reps + Senators
           </button>
           <button class="view-tab" type="button" data-view="sources">
             <i data-lucide="database"></i>
@@ -54,12 +54,12 @@
           <input id="searchInput" type="search" placeholder="Search bills, summaries, buckets, actions, legislators">
         </label>
 
-        <label>
+        <label class="bill-filter">
           Bucket
           <select id="bucketFilter"></select>
         </label>
 
-        <label>
+        <label class="bill-filter">
           Priority
           <select id="priorityFilter">
             <option value="">All</option>
@@ -71,18 +71,30 @@
           </select>
         </label>
 
-        <label>
+        <label class="bill-filter">
           Status
           <select id="statusFilter"></select>
         </label>
 
         <label>
-          Chamber
+          <span id="chamberFilterLabel">Chamber</span>
           <select id="chamberFilter">
             <option value="">All</option>
             <option value="House">House</option>
             <option value="Senate">Senate</option>
             <option value="Joint">Joint</option>
+          </select>
+        </label>
+
+        <label class="bill-filter">
+          Sort
+          <select id="sortFilter">
+            <option value="priority">Priority</option>
+            <option value="latest">Latest movement</option>
+            <option value="bill">Bill number</option>
+            <option value="amendments">Most amendments</option>
+            <option value="texts">Most text links</option>
+            <option value="status">Status</option>
           </select>
         </label>
 
@@ -96,7 +108,7 @@
           <section class="metric-grid" id="metricGrid"></section>
           <section class="panel-section">
             <div class="section-head">
-              <h2>Policy Buckets</h2>
+              <h2 id="sideFilterTitle">Policy Buckets</h2>
               <span id="bucketTotal" class="muted"></span>
             </div>
             <div id="bucketList" class="bucket-list"></div>
@@ -174,9 +186,15 @@
           <section id="legislatorsView" class="view" aria-labelledby="legislatorsTitle">
             <div class="section-head">
               <div>
-                <h2 id="legislatorsTitle">Legislators</h2>
+                <h2 id="legislatorsTitle">Representatives, Senators, Committees</h2>
                 <p id="legislatorCount" class="muted"></p>
               </div>
+            </div>
+            <div class="people-tools">
+              <button type="button" data-people-filter="">All</button>
+              <button type="button" data-people-filter="Rep">House</button>
+              <button type="button" data-people-filter="Sen">Senate</button>
+              <button type="button" data-people-filter="Jnt">Committees</button>
             </div>
             <div id="legislatorGrid" class="legislator-grid"></div>
           </section>
