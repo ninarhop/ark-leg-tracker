@@ -1,20 +1,24 @@
 :root {
   color-scheme: light;
-  --bg: #f5f3ef;
+  --navy: #16003f;
+  --navy-2: #241155;
+  --orange: #f26a21;
+  --orange-dark: #c94c12;
+  --bg: #f7f3ed;
   --surface: #ffffff;
-  --surface-soft: #fbfaf7;
-  --surface-tint: #eef6f4;
-  --ink: #1f2528;
-  --muted: #6d6761;
-  --line: #d9d3c7;
-  --teal: #0f766e;
-  --teal-dark: #115e59;
-  --brick: #a33b2f;
+  --surface-soft: #fffaf4;
+  --surface-tint: #fff1e6;
+  --ink: #17112d;
+  --muted: #6c6478;
+  --line: #ddd2c4;
+  --teal: var(--orange);
+  --teal-dark: var(--navy);
+  --brick: #b83d18;
   --gold: #a26314;
   --green: #287a45;
-  --blue: #245f8f;
-  --violet: #5f4b8b;
-  --shadow: 0 1px 2px rgba(21, 25, 27, 0.08), 0 8px 24px rgba(21, 25, 27, 0.06);
+  --blue: #1d4f8f;
+  --violet: var(--navy-2);
+  --shadow: 0 1px 2px rgba(22, 0, 63, 0.08), 0 8px 24px rgba(22, 0, 63, 0.06);
 }
 
 * {
@@ -127,8 +131,9 @@ a {
   justify-content: space-between;
   gap: 16px;
   padding: 14px 18px;
-  border-bottom: 1px solid var(--line);
-  background: var(--surface-soft);
+  border-bottom: 4px solid var(--orange);
+  background: var(--navy);
+  color: #ffffff;
 }
 
 .brand-block {
@@ -138,13 +143,11 @@ a {
   gap: 14px;
 }
 
-.capitol-image {
-  width: 132px;
-  height: 74px;
-  object-fit: cover;
-  border-radius: 6px;
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
+.brand-logo {
+  width: 82px;
+  height: 82px;
+  object-fit: contain;
+  flex: 0 0 auto;
 }
 
 .brand-copy {
@@ -154,7 +157,7 @@ a {
 }
 
 .eyebrow {
-  color: var(--teal-dark);
+  color: var(--orange);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0;
@@ -167,6 +170,10 @@ a {
   line-height: 1.35;
 }
 
+.topbar #dataStatus {
+  color: rgba(255, 255, 255, 0.78);
+}
+
 .view-tabs {
   display: flex;
   align-items: center;
@@ -176,9 +183,27 @@ a {
 }
 
 .view-tab.active {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: #fff;
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--navy);
+  font-weight: 800;
+}
+
+.topbar .view-tab {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #ffffff;
+}
+
+.topbar .view-tab:hover {
+  border-color: var(--orange);
+  color: #ffffff;
+}
+
+.topbar .view-tab.active {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--navy);
 }
 
 .command-bar {
@@ -920,9 +945,9 @@ tbody tr.selected td {
     flex-direction: column;
   }
 
-  .capitol-image {
-    width: 100%;
-    height: 108px;
+  .brand-logo {
+    width: 74px;
+    height: 74px;
   }
 
   .command-bar,

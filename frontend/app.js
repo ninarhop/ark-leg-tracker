@@ -1,5 +1,5 @@
 const STORAGE_KEY = "arkLegTrackerWorkspace.v2";
-const APP_VERSION = "2026-05-21e";
+const APP_VERSION = "2026-05-22a";
 const PAGE_SIZE = 100;
 
 const statusLabels = {
