@@ -47,6 +47,14 @@ Add any of these repository secrets if you want alerts outside GitHub issues:
 
 If none are set, the workflow still opens GitHub issues for notifications.
 
+To receive GitHub email notifications, open the repository, click `Watch`, choose `Custom`, and turn on `Issues`.
+
+## Test notifications
+
+Open `Actions`, choose `Poll Arkansas Legislature`, click `Run workflow`, and check `Send a test notification without polling LegiScan`.
+
+That test creates a GitHub issue and posts to any configured webhook secrets without using LegiScan credits.
+
 ## Manual test
 
 After adding the secret, open the repo's `Actions` tab and run:

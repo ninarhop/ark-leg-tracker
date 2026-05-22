@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: "*/5 * * * *"
   workflow_dispatch:
+    inputs:
+      test_notification:
+        description: "Send a test notification without polling LegiScan"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -38,6 +44,7 @@ jobs:
           NOTIFY_WEBHOOK_URL: ${{ secrets.NOTIFY_WEBHOOK_URL }}
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          SEND_TEST_NOTIFICATION: ${{ github.event_name == 'workflow_dispatch' && inputs.test_notification }}
         run: python scripts/update_legislature.py
 
       - name: Commit data changes

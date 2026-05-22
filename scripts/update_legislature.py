@@ -79,6 +79,10 @@ def clean(value) -> str:
     return " ".join(str(value or "").replace("\xa0", " ").split())
 
 
+def env_bool(name: str) -> bool:
+    return os.getenv(name, "").lower() in {"1", "true", "yes", "on"}
+
+
 def labelize(value) -> str:
     text = clean(value)
     if not text:
@@ -448,7 +452,32 @@ def notification_body(changes):
     return "\n".join(lines)
 
 
+def send_test_notification():
+    checked_at = utc_now()
+    title = "Arkansas Legislature tracker test notification"
+    body = "\n".join([
+        "Arkansas Legislature tracker test notification",
+        "",
+        "- TEST: notification delivery is connected.",
+        "  This did not poll LegiScan and does not mean a real bill changed.",
+        "",
+        f"Sent at: {checked_at}",
+        "Live tracker: https://ninarhop.github.io/ark-leg-tracker/",
+    ])
+    post_github_issue(title, body)
+    post_webhook(body)
+    print(json.dumps({
+        "checked_at": checked_at,
+        "test_notification": True,
+        "message": "Test notification sent.",
+    }, indent=2))
+    return 0
+
+
 def run():
+    if env_bool("SEND_TEST_NOTIFICATION"):
+        return send_test_notification()
+
     api_key = os.getenv("LEGISCAN_API_KEY")
     if not api_key:
         print("LEGISCAN_API_KEY is not set. Add it as a GitHub Actions repository secret.")
