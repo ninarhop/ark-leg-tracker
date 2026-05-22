@@ -1,5 +1,5 @@
 const STORAGE_KEY = "arkLegTrackerWorkspace.v2";
-const APP_VERSION = "2026-05-21d";
+const APP_VERSION = "2026-05-21e";
 const PAGE_SIZE = 100;
 
 const statusLabels = {
@@ -113,7 +113,7 @@ function bindEvents() {
   els.searchInput.addEventListener("input", debounce(() => {
     state.filters.search = els.searchInput.value.trim();
     state.page = 0;
-    renderAll();
+    renderBillFilterChange(Boolean(state.filters.search));
   }, 180));
 
   [
@@ -126,9 +126,12 @@ function bindEvents() {
       state.filters[key] = element.value;
       if (key === "chamber" && state.view === "legislators") {
         state.peopleFilter = { House: "Rep", Senate: "Sen", Joint: "Jnt" }[element.value] || "";
+        state.page = 0;
+        renderAll();
+        return;
       }
       state.page = 0;
-      renderAll();
+      renderBillFilterChange(Boolean(element.value));
     });
   });
 
@@ -177,10 +180,11 @@ function bindEvents() {
 
     const button = event.target.closest("[data-bucket]");
     if (!button) return;
-    state.filters.bucket = button.dataset.bucket;
-    els.bucketFilter.value = button.dataset.bucket;
+    const requestedBucket = button.dataset.bucket || "";
+    state.filters.bucket = state.filters.bucket === requestedBucket && requestedBucket ? "" : requestedBucket;
+    els.bucketFilter.value = state.filters.bucket;
     state.page = 0;
-    renderAll();
+    renderBillFilterChange(true);
   });
 
   [els.billTable, els.movementList, els.alertList, els.queueList].forEach((container) => {
@@ -387,6 +391,16 @@ function renderAll() {
   refreshIcons();
 }
 
+function renderBillFilterChange(shouldOpenBillsView = false) {
+  if (shouldOpenBillsView && !["bills", "queue"].includes(state.view)) {
+    applyView("bills");
+    renderDetail();
+    updateDataStatus();
+    return;
+  }
+  renderAll();
+}
+
 function renderCurrentView() {
   if (state.view === "overview") renderOverview();
   if (state.view === "bills") renderBillsView();
@@ -449,12 +463,18 @@ function renderBucketList() {
   const counts = countBy(state.bills.map((bill) => mergedBill(bill).bucket || "Unbucketed"));
   const rows = Object.entries(counts).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
   els.bucketTotal.textContent = `${rows.length} buckets`;
-  els.bucketList.innerHTML = rows.map(([bucket, count]) => `
+  els.bucketList.innerHTML = `
+    <button class="bucket-row ${state.filters.bucket === "" ? "active" : ""}" type="button" data-bucket="">
+      <span>All Bills</span>
+      <strong>${formatNumber(state.bills.length)}</strong>
+    </button>
+    ${rows.map(([bucket, count]) => `
     <button class="bucket-row ${state.filters.bucket === bucket ? "active" : ""}" type="button" data-bucket="${escapeAttr(bucket)}">
       <span>${escapeHtml(bucket)}</span>
       <strong>${formatNumber(count)}</strong>
     </button>
-  `).join("");
+  `).join("")}
+  `;
 }
 
 function renderOverview() {
