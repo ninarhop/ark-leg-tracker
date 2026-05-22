@@ -444,7 +444,7 @@ def run():
     api_key = os.getenv("LEGISCAN_API_KEY")
     if not api_key:
         print("LEGISCAN_API_KEY is not set. Add it as a GitHub Actions repository secret.")
-        return 0
+        return 1 if os.getenv("GITHUB_ACTIONS") == "true" else 0
 
     checked_at = utc_now()
     tracker = read_json(TRACKER_PATH, {"bills": [], "alerts": []})
