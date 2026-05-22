@@ -377,6 +377,14 @@ def update_people(api_key, sessions, existing_people):
     return sorted(people_by_id.values(), key=lambda row: (row.get("role") or "", row.get("district") or "", row.get("name") or ""))
 
 
+def should_refresh_people(cache, existing_people):
+    if os.getenv("LEGISCAN_REFRESH_PEOPLE", "").lower() in {"1", "true", "yes"}:
+        return True
+    if not existing_people:
+        return True
+    return clean(cache.get("last_people_checked")) != today()
+
+
 def post_github_issue(title: str, body: str) -> None:
     token = os.getenv("GITHUB_TOKEN")
     repo = os.getenv("GITHUB_REPOSITORY")
@@ -460,7 +468,10 @@ def run():
     raw_bills_by_id = {}
 
     sessions = current_sessions(api_key)
-    people = update_people(api_key, sessions, existing_people)
+    refresh_people = should_refresh_people(cache, existing_people)
+    if refresh_people:
+        cache_changed = True
+    people = update_people(api_key, sessions, existing_people) if refresh_people else existing_people
     people_by_id = {str(person.get("people_id")): person for person in people if person.get("people_id")}
 
     fetch_queue = []
@@ -587,6 +598,8 @@ def run():
         write_json(PEOPLE_PATH, people)
     if cache_changed:
         cache["generated_at"] = checked_at
+        if refresh_people:
+            cache["last_people_checked"] = today()
         write_json(CACHE_PATH, cache)
     write_json(STATUS_PATH, status)
 
